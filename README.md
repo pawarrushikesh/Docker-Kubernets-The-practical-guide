@@ -326,6 +326,125 @@ If everything is configured correctly, the application response will be displaye
 
 ---
 
+# Run Custom Image
+
+Using Image ID:
+
+```bash
+docker run -p 443:80 90cd42400a3
+```
+
+Using Tagged Image:
+
+```bash
+docker run -p 443:80 node-app:v1
+```
+
+### Port Mapping
+
+```text
+443 -> Host Port
+80  -> Container Port
+```
+
+---
+
+# Run Container in Background
+
+To run the container in detached mode (background), use the `-d` option:
+
+```bash
+docker run -d -p 80:80 node-app:v1
+```
+
+To assign a custom container name:
+
+```bash
+docker run -d --name node-app-container -p 80:80 node-app:v1
+```
+
+---
+
+# Verify Running Containers
+
+List running containers:
+
+```bash
+docker ps
+```
+
+List all containers:
+
+```bash
+docker ps -a
+```
+
+---
+
+# View Container Logs
+
+View logs for a container:
+
+```bash
+docker logs <container-id>
+```
+
+Example:
+
+```bash
+docker logs node-app-container
+```
+
+Follow logs in real time:
+
+```bash
+docker logs -f node-app-container
+```
+
+---
+
+# Manage Containers
+
+Stop a container:
+
+```bash
+docker stop node-app-container
+```
+
+Start a stopped container:
+
+```bash
+docker start node-app-container
+```
+
+Restart a container:
+
+```bash
+docker restart node-app-container
+```
+
+Remove a container:
+
+```bash
+docker rm node-app-container
+```
+
+---
+
+# Access the Application
+
+Open a browser and navigate to:
+
+```text
+http://<SERVER-IP>
+```
+
+For local testing:
+
+```text
+http://localhost
+```
+
 # Summary
 
 In this guide, you learned how to:
