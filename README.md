@@ -831,6 +831,217 @@ docker volume prune
 | `docker volume prune` | Remove unused volumes |
 | `docker run -v feedback:/app/feedback ...` | Create and mount a named volume |
 
+---
+
+# Bind Mounts and Anonymous Volumes
+
+In this example, we use:
+
+- **Named Volume** for application-generated data
+- **Bind Mount** for source code synchronization
+- **Anonymous Volume** for protecting `node_modules`
+
+## Run Container with Volumes
+
+```bash
+docker run -d \
+  -p 443:80 \
+  --name feedback-app-volume \
+  -v feedback:/app/feedback \
+  -v "/home/ec2-user/Docker-Kubernets-The-practical-guide/data-volumes-03-adj-node-code:/app" \
+  -v /app/node_modules \
+  feedback-node-volume
+```
+
+## Command Breakdown
+
+| Option | Description |
+|----------|-------------|
+| `-v feedback:/app/feedback` | Named volume for persistent feedback data |
+| `-v "/home/ec2-user/...:/app"` | Bind mount local source code into the container |
+| `-v /app/node_modules` | Anonymous volume for container-managed dependencies |
+| `feedback-node-volume` | Docker image name |
+
+## Volume Types Used
+
+### 1. Named Volume
+
+```bash
+-v feedback:/app/feedback
+```
+
+Stores persistent application data.
+
+```text
+Host (Managed by Docker)
+        │
+        ▼
+feedback Volume
+        │
+        ▼
+/app/feedback
+```
+
+Data survives container removal and recreation.
+
+---
+
+### 2. Bind Mount
+
+```bash
+-v "/home/ec2-user/Docker-Kubernets-The-practical-guide/data-volumes-03-adj-node-code:/app"
+```
+
+Maps your local project folder directly into the container.
+
+```text
+Local Machine
+/home/ec2-user/Docker-Kubernets-The-practical-guide/data-volumes-03-adj-node-code
+        │
+        ▼
+Container
+/app
+```
+
+### Key Benefit
+
+Any changes made to local source files are immediately reflected inside the running container.
+
+Example:
+
+```bash
+vi feedback.html
+```
+
+If you save changes locally:
+
+```html
+<h1>Hello Docker Volume</h1>
+```
+
+the container will instantly see the updated file at:
+
+```text
+/app/feedback.html
+```
+
+No image rebuild is required.
+
+---
+
+### 3. Anonymous Volume
+
+```bash
+-v /app/node_modules
+```
+
+Protects container dependencies from being overwritten by the bind mount.
+
+Without this anonymous volume:
+
+```text
+Host Folder
+      ↓
+Container /app
+      ↓
+node_modules gets hidden
+```
+
+With the anonymous volume:
+
+```text
+Container node_modules
+      ↓
+Stored separately
+      ↓
+Not overwritten by bind mount
+```
+
+This ensures the application continues to work even when the local project folder does not contain a `node_modules` directory.
+
+---
+
+## Live Code Updates
+
+Because a **Bind Mount** is used:
+
+```bash
+-v "/home/ec2-user/Docker-Kubernets-The-practical-guide/data-volumes-03-adj-node-code:/app"
+```
+
+✅ Editing `feedback.html` locally updates the file inside the container immediately.
+
+✅ No `docker build` required.
+
+✅ No container restart required (for static files such as HTML, CSS, and JavaScript).
+
+### Example
+
+Edit:
+
+```bash
+vi feedback.html
+```
+
+Change:
+
+```html
+<h1>Feedback Form</h1>
+```
+
+to
+
+```html
+<h1>Updated Feedback Form</h1>
+```
+
+Save the file and refresh the browser.
+
+The application will show:
+
+```html
+Updated Feedback Form
+```
+
+without rebuilding the image.
+
+---
+
+## When Rebuild Is Required
+
+A rebuild is usually required when:
+
+- Dockerfile changes
+- New npm package is added
+- Package.json changes
+- Application dependencies change
+
+Example:
+
+```bash
+docker build -t feedback-node-volume .
+```
+
+---
+
+## Commands Summary
+
+| Command | Purpose |
+|----------|----------|
+| `docker volume ls` | List volumes |
+| `docker volume inspect feedback` | View volume details |
+| `docker run -v feedback:/app/feedback ...` | Create named volume |
+| `docker run -v HOST_PATH:/app ...` | Create bind mount |
+| `docker run -v /app/node_modules ...` | Create anonymous volume |
+
+### Key Learning
+
+✅ Named Volumes for persistent data  
+✅ Bind Mounts for live source-code synchronization  
+✅ Anonymous Volumes for protecting `node_modules`  
+✅ Live updates without rebuilding the image  
+✅ Volume persistence across container recreation
+
 ### Key Learning
 
 ✅ Named Volume Creation  
