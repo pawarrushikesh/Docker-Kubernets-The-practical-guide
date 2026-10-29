@@ -60,3 +60,160 @@ The guide covers:
 
 ```bash
 sudo dnf update -y
+```
+
+## Install Docker
+
+```bash
+sudo dnf install -y docker
+```
+
+## Start Docker Service
+
+```bash
+sudo systemctl start docker
+```
+
+## Enable Docker Service at Boot
+
+```bash
+sudo systemctl enable docker
+```
+
+## Verify Docker Service
+
+```bash
+sudo systemctl status docker
+```
+
+---
+
+# 3. Configure Docker for Non-Root User
+
+Allow the current user to run Docker commands without using sudo:
+
+```bash
+sudo usermod -aG docker $USER
+```
+
+Apply the new group membership:
+
+```bash
+newgrp docker
+```
+
+> Log out and log in again for the changes to take effect.
+
+---
+
+# 4. Verify Docker Installation
+
+Run the Docker test container:
+
+```bash
+docker run hello-world
+```
+
+Expected output:
+
+```text
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+```
+
+Check Docker version:
+
+```bash
+docker --version
+```
+
+Example:
+
+```text
+Docker version 28.x.x
+```
+
+---
+
+# 5. Running Official Docker Images
+
+## Search Images
+
+Visit Docker Hub:
+
+https://hub.docker.com
+
+Search for:
+
+```text
+node
+```
+
+## Run Node Image
+
+```bash
+docker run node
+```
+
+## List Containers
+
+Running containers:
+
+```bash
+docker ps
+```
+
+All containers:
+
+```bash
+docker ps -a
+```
+
+## Run Interactive Container
+
+```bash
+docker run -it node
+```
+
+---
+
+# 6. Build Your Own Docker Image
+
+## Create Project Directory
+
+```bash
+mkdir dockerfile-ownimage
+cd dockerfile-ownimage
+```
+
+## Create Application Files
+
+```bash
+vi server.js
+vi package.json
+vi Dockerfile
+```
+
+## Project Structure
+
+```text
+dockerfile-ownimage/
+├── Dockerfile
+├── package.json
+└── server.js
+```
+
+## Sample Dockerfile
+
+```Dockerfile
+FROM node:18
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+EXPOSE 80
+
+CMD 
