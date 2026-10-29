@@ -657,6 +657,68 @@ docker run -p 3000:80 IMAGE_ID
 
 ---
 
+---
+
+# Execute Commands Inside a Running Container
+
+Docker provides the `exec` command to run commands inside an already running container.
+
+## Open an Interactive Bash Shell
+
+```bash
+docker exec -it feedback-app /bin/bash
+```
+
+### Explanation
+
+| Option | Description |
+|----------|-------------|
+| `docker exec` | Execute a command inside a running container |
+| `-i` | Keep STDIN open (Interactive Mode) |
+| `-t` | Allocate a terminal |
+| `feedback-app` | Container name |
+| `/bin/bash` | Start a Bash shell inside the container |
+
+Once connected, you can execute Linux commands directly inside the container:
+
+```bash
+pwd
+ls -l
+cd /app
+cat package.json
+```
+
+Exit the container shell:
+
+```bash
+exit
+```
+
+> The container continues running after exiting the shell. Only the interactive Bash session is closed.
+
+## Alternative: Run a Single Command
+
+Instead of opening a shell, you can directly execute a command:
+
+```bash
+docker exec feedback-app ls -l
+```
+
+Example:
+
+```bash
+docker exec feedback-app pwd
+docker exec feedback-app ls
+```
+
+### Commands Summary
+
+| Command | Description |
+|----------|-------------|
+| `docker exec -it feedback-app /bin/bash` | Open Bash shell inside container |
+| `docker exec feedback-app ls -l` | Execute a single command |
+| `exit` | Exit from container shell |
+
 # 24. Summary
 
 ✅ Install Docker on Amazon Linux 2023  
